@@ -19,10 +19,10 @@ public class InsuranceServiceController {
 	private InsuranceService insuranceService;
 	
 	@Autowired
-	private ResponseEntity responseEntity;
+	private ResponseEntity<?> responseEntity;
 	
 	@RequestMapping(value="/obtain",method=RequestMethod.POST)
-	public ResponseEntity getMoney (@RequestBody Money money){
+	public ResponseEntity<?> getMoney (@RequestBody Money money){
 		
 		System.out.println(money.getType());
 		System.out.println(money.getNumber());

@@ -13,10 +13,10 @@ public class InsuranceService {
 	@Autowired
 	private QnectService qnectService;
 	
-	public ResponseEntity insuranceServiceProcess(){
+	public ResponseEntity<?> insuranceServiceProcess(){
 		//QnectService qnectService = new QnectService();
 		QnectRespBean qnectRespBean = qnectService.process();
-		ResponseEntity responseEntity = new ResponseEntity(qnectRespBean , HttpStatus.OK);
+		ResponseEntity<?> responseEntity = new ResponseEntity(qnectRespBean , HttpStatus.OK);
 		return responseEntity;
 
 	}

@@ -29,6 +29,9 @@ public class InsuranceServiceController {
 		
 		responseEntity = insuranceService.insuranceServiceProcess();
 		
+		System.out.println("aaa");
+		
+		
 		return responseEntity;
 	}
 }

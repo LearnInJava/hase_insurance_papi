@@ -1,37 +1,89 @@
 package demo;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-
 import demo.model.Money;
-import demo.service.InsuranceService;
+
 
 
 @RestController
 @RequestMapping(value="/api")
 public class InsuranceServiceController {
 	
-	@Autowired
-	private InsuranceService insuranceService;
+	public static final Logger LOGGER = LoggerFactory.getLogger(InsuranceServiceController.class);
 	
-	@Autowired
-	private ResponseEntity<?> responseEntity;
+//	private ResponseEntity<?> responseEntity;
 	
-	@RequestMapping(value="/obtain",method=RequestMethod.POST)
-	public ResponseEntity<?> getMoney (@RequestBody Money money){
+	@RequestMapping(value="/wechat",method=RequestMethod.GET)
+	public String getMoney (HttpServletRequest request ,HttpServletResponse response) throws ClientProtocolException, IOException{
 		
-		System.out.println(money.getType());
-		System.out.println(money.getNumber());
+		HttpClient httpClient = new DefaultHttpClient();
+		HttpPost httpPost = new HttpPost("http://localhost:8080/api/dataServer");
+		//Content-Type:application/x-www-form-urlencoded 
+		httpPost.setHeader("Content-Type", "application/x-www-form-urlencoded");
+		List<NameValuePair> params = new ArrayList<NameValuePair>();
+		params.add(new BasicNameValuePair("username","admin"));
+		params.add(new BasicNameValuePair("password","123456"));
 		
-		responseEntity = insuranceService.insuranceServiceProcess();
+		httpPost.setEntity(new UrlEncodedFormEntity(params,"utf-8"));
+		HttpResponse httpResponse = httpClient.execute(httpPost);
 		
-		System.out.println("aaa");
+		if(httpResponse.getStatusLine().getStatusCode()==200){
+			HttpEntity entity = httpResponse.getEntity();
+			String result = EntityUtils.toString(entity, "UTF-8");
+			System.out.println(result);
+		}
 		
+		return "access";
+	}
+	
+	@RequestMapping(value="/dataServer")
+	public String getParams(HttpServletRequest request, HttpServletResponse response){
+		String username = request.getParameter("username");
+		String password = request.getParameter("password");
+		System.out.println(username);
+		System.out.println(password);
+		return "dataServer";
+	}
+	
+	@ResponseBody
+	@RequestMapping(value="/reqdata" , method=RequestMethod.GET)
+	public String getData(HttpServletResponse response){
 		
-		return responseEntity;
+		JSONObject object = new JSONObject();
+		
+		try {
+			object.put("男一", "乐无异");
+			object.put("女一", "闻人羽");
+			object.put("男二", "夏夷则");
+			object.put("女二", "阿阮");
+		} catch (JSONException e) {
+			LOGGER.error("error when combine json data, msg : "+ e.getMessage());
+		}
+		return object.toString();
 	}
 }

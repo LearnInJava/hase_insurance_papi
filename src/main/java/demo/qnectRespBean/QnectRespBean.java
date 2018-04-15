@@ -1,4 +1,4 @@
-package demo.QnectRespBean;
+package demo.qnectRespBean;
 
 public class QnectRespBean {
 	

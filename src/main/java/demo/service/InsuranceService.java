@@ -5,7 +5,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import demo.QnectRespBean.QnectRespBean;
+import demo.qnectRespBean.QnectRespBean;
 
 @Service
 public class InsuranceService {

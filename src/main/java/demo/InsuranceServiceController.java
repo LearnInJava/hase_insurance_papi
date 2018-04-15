@@ -61,21 +61,26 @@ public class InsuranceServiceController {
 		return "access";
 	}
 	
-	@RequestMapping(value="/dataServer")
-	public String getParams(HttpServletRequest request, HttpServletResponse response){
-		String username = request.getParameter("username");
-		String password = request.getParameter("password");
-		System.out.println(username);
-		System.out.println(password);
-		return "dataServer";
+	@ResponseBody
+	@RequestMapping(value="/dataServer", method={RequestMethod.POST,RequestMethod.GET})
+	public String getParams(@RequestBody Money money){
+		String type = money.getType();
+		
+		JSONObject obj = new JSONObject();
+		try {
+			obj.put("name", type);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+			
+		return obj.toString();
 	}
 	
 	@ResponseBody
-	@RequestMapping(value="/reqdata" , method=RequestMethod.GET)
+	@RequestMapping(value="/reqdata" , method=RequestMethod.POST)
 	public String getData(HttpServletResponse response){
 		
 		JSONObject object = new JSONObject();
-		
 		try {
 			object.put("男一", "乐无异");
 			object.put("女一", "闻人羽");
